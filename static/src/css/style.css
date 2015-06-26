@@ -1,5 +1,4 @@
-p .test{
+table th { color : #000000 ; }
+table td { font-size: 13px ; text-align: center; }
 
-   color: #00a1d9;
-
-}
+table th .name { text-align: left ;  }
