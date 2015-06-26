@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+
+        <report id="report_qweb"
+            string="Invoices Partner Q"
+            model="res.partner"
+            report_type="qweb-pdf"
+            file="kzc_partner.partner_reportQ"
+            name="kzc_partner.partner_report"
+        />
+
+
+
+    </data>
+</openerp>
