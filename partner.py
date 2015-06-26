@@ -447,7 +447,7 @@ class res_partner(osv.osv):
         return result
 
     # function 13
-    
+
     def _get_top_saled_products(self,cr,uid,ids,fields, arg=None,context=None):
         result = {}
         previous_fiscalyear = False
@@ -463,7 +463,7 @@ class res_partner(osv.osv):
         fiscalyear_ids = fiscalyear_obj.search(cr,uid,[('name','=',current_year)])
         fiscalyear = fiscalyear_obj.browse(cr,uid,fiscalyear_ids[0])
         previous_fiscalyear_ids = fiscalyear_obj.search(cr,uid,[('name','=',previous_year)])
-        if previous_fiscalyear_ids : 
+        if previous_fiscalyear_ids :
             previous_fiscalyear = fiscalyear_obj.browse(cr,uid,previous_fiscalyear_ids[0])
         for id in ids:
            result.setdefault(id, [])
@@ -478,6 +478,7 @@ class res_partner(osv.osv):
             previous_pick_ids = pick_obj.search(cr,uid,[('partner_id','=',ids[0]),('move_type','=','direct'),('name','not ilike','%retour%'),('date','>=',previous_fiscalyear.date_start),('date','<=',previous_fiscalyear.date_stop)])
             res_previous = cr.fetchall()
         product_number = len(res)
+        cr.execute('''DELETE FROM sale_products WHERE partner_id = %s'''%ids[0])
         for r in range(len(res)):
             prev_qty=0
             if previous_pick_ids:
@@ -485,50 +486,37 @@ class res_partner(osv.osv):
                 prev_res=cr.fetchall()
                 if prev_res:
                     prev_qty=prev_res[0][2]
-            #sale_products_id=sale_prod.search(cr,uid,[('partner_id','=',ids[0]),('product_id','=',res[r][0]),('product_uom','=',res[r][1]),('current_qty','=',res[r][2]),('previous_qty','=',prev_qty)])
-            #if not sale_products_id:
             top_id = sale_prod.create(cr,uid,{'partner_id':ids[0],
                                               'product_id':res[r][0],
                                               'product_uom':res[r][1],
                                               'current_qty':res[r][2],
                                               'previous_qty':prev_qty,
                                                   })
-            
-            result[id].append(top_id)
-            cr.execute('''DELETE FROM sale_products WHERE id NOT IN (SELECT min(id) FROM sale_products GROUP BY partner_id, product_id,product_uom,current_qty,previous_qty)''')
 
+            result[id].append(top_id)
         if product_number < 5 and previous_pick_ids :
             i=0
             cr.execute('''select product_id,product_uom,sum(product_qty) from stock_move where picking_id in %s group by product_id,product_uom order by sum(product_qty) desc limit 5'''%(tuple(previous_pick_ids),))
             prev_res_suite=cr.fetchall()
             if len(prev_res_suite) >= (5-product_number):
                 for r in range(5-product_number):
-                    #sale_products_id=sale_prod.search(cr,uid,[('partner_id','=',ids[0]),('product_id','=',res[r][0]),('product_uom','=',res[r][1]),('previous_qty','=',prev_qty)])
-                    #if not sale_products_id:
-                    top_id = sale_prod.create(cr,uid,{'partner_id':ids[0],
-                                                      'product_id':prev_res_suite[r][0],
-                                                  'product_uom':prev_res_suite[r][1],
-                                                  'previous_qty':prev_res_suite[r][2],
-                                                      })
-                    result[id].append(top_id)
-                    cr.execute('''DELETE FROM sale_products WHERE id NOT IN (SELECT min(id) FROM sale_products GROUP BY partner_id, product_id,product_uom,previous_qty''')
-
-            else:
-                for r in range(len(prev_res_suite)):
-                    #sale_products_id=sale_prod.search(cr,uid,[('partner_id','=',ids[0]),('product_id','=',res[r][0]),('product_uom','=',res[r][1]),('previous_qty','=',prev_qty)])
-                    #if not sale_products_id:
                     top_id = sale_prod.create(cr,uid,{'partner_id':ids[0],
                                                       'product_id':prev_res_suite[r][0],
                                                       'product_uom':prev_res_suite[r][1],
                                                       'previous_qty':prev_res_suite[r][2],
                                                       })
                     result[id].append(top_id)
-                    cr.execute('''DELETE FROM sale_products WHERE id NOT IN (SELECT min(id) FROM sale_products GROUP BY partner_id, product_id,product_uom,previous_qty''')
+            else:
+                for r in range(len(prev_res_suite)):
+                    top_id = sale_prod.create(cr,uid,{'partner_id':ids[0],
+                                                      'product_id':prev_res_suite[r][0],
+                                                      'product_uom':prev_res_suite[r][1],
+                                                      'previous_qty':prev_res_suite[r][2],
+                                                      })
+                    result[id].append(top_id)
 
-        #top_id=sale_prod.search(cr,uid,[('partner_id','=',ids[0])])
-        #print top_id
-        #result[id].append(top_id)
         return result
+
 
     # function 14
 
@@ -577,6 +565,7 @@ class res_partner(osv.osv):
         fiscalyear_ids = fiscalyear_obj.search(cr,uid,[('name','=',current_year)])
         fiscalyear = fiscalyear_obj.browse(cr,uid,fiscalyear_ids[0])
         previous_fiscalyear_ids = fiscalyear_obj.search(cr,uid,[('name','=',previous_year)])
+        cr.execute('''DELETE FROM purchase_products WHERE partner_id = %s'''%ids[0])
         if previous_fiscalyear_ids :
             previous_fiscalyear = fiscalyear_obj.browse(cr,uid,previous_fiscalyear_ids[0])
         for id in ids:
@@ -600,10 +589,11 @@ class res_partner(osv.osv):
                 prev_res=cr.fetchall()
                 if prev_res:
                     prev_qty=prev_res[0][2]
-            top_id = purchase_prod.create(cr,uid,{'product_id':res[r][0],
-                                              'product_uom':res[r][1],
-                                              'current_qty':res[r][2],
-                                              'previous_qty':prev_qty,
+            top_id = purchase_prod.create(cr,uid,{'partner_id':ids[0],
+                                                  'product_id':res[r][0],
+                                                  'product_uom':res[r][1],
+                                                  'current_qty':res[r][2],
+                                                  'previous_qty':prev_qty,
                                                   })
             
             result[id].append(top_id)
@@ -613,16 +603,18 @@ class res_partner(osv.osv):
             prev_res_suite=cr.fetchall()
             if len(prev_res_suite) >= (5-product_number):
                 for r in range(5-product_number):
-                    top_id = purchase_prod.create(cr,uid,{'product_id':prev_res_suite[r][0],
-                                                  'product_uom':prev_res_suite[r][1],
-                                                  'previous_qty':prev_res_suite[r][2],
+                    top_id = purchase_prod.create(cr,uid,{'partner_id':ids[0],
+                                                          'product_id':prev_res_suite[r][0],
+                                                          'product_uom':prev_res_suite[r][1],
+                                                          'previous_qty':prev_res_suite[r][2],
                                                       })
                     result[id].append(top_id)
             else:
                 for r in range(len(prev_res_suite)):
-                    top_id = purchase_prod.create(cr,uid,{'product_id':prev_res_suite[r][0],
-                                                      'product_uom':prev_res_suite[r][1],
-                                                      'previous_qty':prev_res_suite[r][2],
+                    top_id = purchase_prod.create(cr,uid,{'partner_id':ids[0],
+                                                          'product_id':prev_res_suite[r][0],
+                                                          'product_uom':prev_res_suite[r][1],
+                                                          'previous_qty':prev_res_suite[r][2],
                                                       })
                     result[id].append(top_id)
         return result
@@ -727,7 +719,7 @@ class res_partner(osv.osv):
             'sale_order_line' : fields.one2many('sale.order', 'partner_id', 'Sale Order Lines', readonly=True, copy=True),
             'purchase_order_line' : fields.one2many('purchase.order', 'partner_id', 'Purchase Order Lines', readonly=True, copy=True),
             'top_sale_products_line' : fields.one2many('sale.products', 'partner_id', 'Top Five Sale products', readonly=True, copy=True),
-            'top_purchase_products_line' : fields.one2many('purchase.products', 'product_id', 'Top Five Purchase products', readonly=True, copy=True),
+            'top_purchase_products_line' : fields.one2many('purchase.products', 'partner_id', 'Top Five Purchase products', readonly=True, copy=True),
              }
 
 res_partner()
