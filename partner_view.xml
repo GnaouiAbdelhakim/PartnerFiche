@@ -74,7 +74,7 @@
                         			 		<field name="amount_total" sum="Total Amount"/>
                         			 		<field name="user_id"/>
                         			 		<field name="state"/>
-                                            <field name="pricelist_id" />
+                                            <field name="currency_id" />
                         			 	</tree>
                         			 </field>
                         			 
@@ -114,7 +114,7 @@
                         			 		<field name="amount_untaxed" sum="Untaxed Amount"/>
                         			 		<field name="amount_total" sum="Total Amount"/>
                         			 		<field name="state"/>
-                                            <field name="pricelist_id" />
+                                            <field name="currency_id" />
                         			 	</tree>
                         			 </field>
                         			 

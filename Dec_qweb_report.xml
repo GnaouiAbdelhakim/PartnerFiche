@@ -4,7 +4,7 @@
 
 
         <report id="report_qweb"
-            string="Invoices Partner Q"
+            string="Fiche Partner"
             model="res.partner"
             report_type="qweb-pdf"
             file="kzc_partner.partner_reportQ"

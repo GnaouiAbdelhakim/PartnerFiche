@@ -11,59 +11,41 @@
 
             <br/><br/><br/>
 
-            <style type="text/css">
-                    #info_client{ font-size:14px; Line-Height: 10px; }
-
-                    table.ca_partner {
-                        font-family: verdana,arial,sans-serif;
-                        font-size:10px;
-                        border-width: 2px;
-                        border-color: #E6E6E6;
-                        border-collapse: collapse;
-                        border-style: solid;
-                                        }
-                    table.ca_partner th {
-                        font-size:10px;
-                        border-width: 2px;
-                        padding: 5px;
-                        border-style: solid;
-                        border-color: E6E6E6;
-                                        }
-                    table.ca_partner td {
-                        font-size:10px;
-                        border-width: 2px;
-                        padding: 8px;
-                        border-style: solid;
-                        border-color: E6E6E6;
-                                        }
-            </style>
-
-            <div id="info_client" class="row">
+            <div id="info_partner" class="row">
                 <div class="col-xs-5 col-xs-offset-7">
                     <p t-if="o.name"><span t-field="o.name"/></p>
-                    <p t-if="o.street"><span t-field="o.street"/></p>
+                    <p t-if="o.street" style="line-height : 20px;"><span t-field="o.street"/></p>
                     <p t-if="o.phone"><span t-field="o.phone"/></p>
                     <p t-if="o.email"><span t-field="o.email"/></p>
                  </div>
             </div>
 
+            <br/><br/>
+
             <div t-if="o.customer">
             <table class="ca_partner">
-                <th></th><th>Exercice courant</th><th>Exercice précédent</th>
-                <tr><td>Chiffre d'affaire / Facture :</td><td><span t-esc="o.current_invoice_turnover"/> <span t-esc="o.company_id.currency_id.symbol" /></td><td><span t-field="o.previous_invoice_turnover"/> <span t-esc="o.company_id.currency_id.symbol" /></td></tr>
-                <tr><td>Chiffre d'affaire / Commande :</td><td><span t-esc="o.current_order_turnover"/> <span t-esc="o.company_id.currency_id.symbol" /></td><td><span t-field="o.previous_order_turnover"/> <span t-esc="o.company_id.currency_id.symbol" /></td></tr>
+                <th class="empty_grid"></th><th class="full_grid">Exercice courant</th><th class="full_grid">Exercice précédent</th>
+                <tr><td class="titre">Chiffre d'affaire / Facture :</td><td><span t-esc="o.current_invoice_turnover"/> <span t-esc="o.company_id.currency_id.symbol" /></td><td><span t-field="o.previous_invoice_turnover"/> <span t-esc="o.company_id.currency_id.symbol" /></td></tr>
+                <tr><td class="titre">Chiffre d'affaire / Commande :</td><td><span t-esc="o.current_order_turnover"/> <span t-esc="o.company_id.currency_id.symbol" /></td><td><span t-field="o.previous_order_turnover"/> <span t-esc="o.company_id.currency_id.symbol" /></td></tr>
             </table>
             </div>
 
             <div t-if="o.supplier">
             <table class="ca_partner">
-                <th></th><th>Exercice courant</th><th>Exercice précédent</th>
-                <tr><td>Facture achat :</td><td><span t-esc="o.current_invoice_purchase"/> <span t-esc="o.company_id.currency_id.symbol" /></td><td><span t-field="o.previous_invoice_purchase"/> <span t-esc="o.company_id.currency_id.symbol" /></td></tr>
-                <tr><td>Bon de commande achat :</td><td><span t-esc="o.current_order_purchase"/> <span t-esc="o.company_id.currency_id.symbol" /></td><td><span t-field="o.previous_order_purchase"/> <span t-esc="o.company_id.currency_id.symbol" /></td></tr>
+                <th class="empty_grid"></th><th class="full_grid">Exercice courant</th><th class="full_grid">Exercice précédent</th>
+                <tr><td class="titre">Facture achat :</td><td><span t-esc="o.current_invoice_purchase"/> <span t-esc="o.company_id.currency_id.symbol" /></td><td><span t-field="o.previous_invoice_purchase"/> <span t-esc="o.company_id.currency_id.symbol" /></td></tr>
+                <tr><td class="titre">Bon de commande achat :</td><td><span t-esc="o.current_order_purchase"/> <span t-esc="o.company_id.currency_id.symbol" /></td><td><span t-field="o.previous_order_purchase"/> <span t-esc="o.company_id.currency_id.symbol" /></td></tr>
             </table>
             </div>
 
-            <br/><br/>
+            <!--
+            <table class="partner_in">
+                <tr><td class="full_grid">En cours client :</td><td>vvvvvvvass</td></tr>
+                <tr><td class="full_grid">Total chèque comporte facture :</td><td>vvvvvvvass</td></tr>
+                <tr><td class="full_grid">Total effet x</td><td>vvvvvvvass</td></tr>
+            </table>
+            -->
+            <br/>
 
             <h4>Liste Factures Impayé</h4>
 
